@@ -16,7 +16,7 @@
     "url": "https://github.com/pvogel2/mwm-renderer.git"
   },
   "author": "Peter Vogel",
-  "license": "MIT",
+  "license": "GPL",
   "dependencies": {
     "three": "^0.92.0"
   },
