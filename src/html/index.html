@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/node_modules/three/build/three.js"></script>
+    <script src="/node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="/dist/bundle.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(event) {
+  			const renderer = new MWM.Renderer();
+	  		renderer.res = '/res/obj/';
+		  	renderer.addGrid(100, 10);
+			  renderer.addAxes(10, 10);
+			  renderer.start();
+		  }); 
+		</script>
+
+		<style type="text/css">
+		  html {
+		    height: 100%;
+        margin:0px;
+        padding:0px;
+		  }
+		  body {
+		    min-height: 100%;
+		    margin:0px;
+		    padding:0px;
+		    overflow: hidden;
+		    position:relative;
+		  }
+		  #threejs-container {
+		    position: absolute;
+		    left: 0;
+		    right: 0;
+		    top:0;
+		    bottom:0;
+		  }
+		</style>
+  </head>
+  <body>
+    <div id="threejs-container">
+    </div>
+  </body>
+</html>

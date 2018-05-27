@@ -1,0 +1,27 @@
+{
+  "name": "mwm-renderer",
+  "version": "0.0.1",
+  "description": "javscript class for wrapping three.js setup",
+  "private": true,
+  "files": [
+    "res/js/renderer.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": "Peter Vogel",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.92.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.9.1",
+    "webpack-cli": "^2.1.4",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
