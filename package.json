@@ -12,7 +12,8 @@
     "start": "webpack-dev-server --open"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "https://github.com/pvogel2/mwm-renderer.git"
   },
   "author": "Peter Vogel",
   "license": "MIT",
