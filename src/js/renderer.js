@@ -1,5 +1,6 @@
 class Renderer {
   constructor() {
+    this.stats = window.Stats ? new Stats() : null;
     this.running = false;
 	this.paused = false;
 	this.three = {
@@ -36,24 +37,24 @@ class Renderer {
             this.height = this.parent.getClientRects()[0].height;
 			//setup the three camera
 			this.three.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 0.1, 1000 );
-			this.three.camera.position.set(0, 30, 80);
+			this.three.camera.position.set(0, 15, 40);
 			//setup the used three renderer
 			this.three.renderer = new THREE.WebGLRenderer({antialias: false});
 			this.three.renderer.setSize( this.width, this.height );
-			this.three.renderer.shadowMap.enabled = false;
 			this.three.renderer.shadowMapSoft = false;
 			this.three.renderer.gammaInput = true;
 			this.three.renderer.gammaOutput = true;
 
 			this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
-			//this.three.control.userPanSpeed = 0.2;
-			//this.three.controls.target.set(0,0,0);
+			this.three.control.userPanSpeed = 0.2;
+			this.three.control.target.set(0,0,0);
 
 			// initialize object to perform world/screen calculations
 
-			//this.three.projector = new THREE.Projector();
+			this.three.projector = new THREE.Projector();
+
 			this.three.raycaster = new THREE.Raycaster()
-			this.three.raycaster.params.Points.threshold = 4;
+			this.three.raycaster.params.Points.threshold = 1;
 
 			this.three.clock = new THREE.Clock();
 			this.three.loadingmanager = new THREE.LoadingManager();
@@ -109,9 +110,11 @@ class Renderer {
 		}
 
 		start() {
+		    if (this.stats) {
+		      this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+		      this.parent.appendChild( this.stats.dom );
+		    }
 			this._setupLights();
-			var thiz = this;
-
 			this.paused = false;
 			this.running = true;
 			this._render();
@@ -133,15 +136,15 @@ class Renderer {
 		}
 
         _setIntersection(event){
-            /*var offset = $(this.three.renderer.domElement).offset();
-			var scrollLeft = $(window).scrollLeft();
-			var scrollTop = $(window).scrollTop();
+            var offset = {left: 0, top:0};//this.three.renderer.domElement.offset();
+			var scrollLeft = window.scrollX;
+			var scrollTop = window.scrollY;
 			this.mouse.x = ( (event.clientX - offset.left + scrollLeft) / this.width ) * 2 - 1;
 			this.mouse.y = - ( (event.clientY - offset.top + scrollTop) / this.height ) * 2 + 1;
             this.three.raycaster.setFromCamera( this.mouse, this.three.camera );
 
 			// calculate objects intersecting the picking ray
-			this.INTERSECTED = this.three.raycaster.intersectObjects( this.geometry.intersect );*/
+			this.INTERSECTED = this.three.raycaster.intersectObjects( this.geometry.intersect );
         }
 
         _loadObject(file, name) {
@@ -180,19 +183,34 @@ class Renderer {
 		}
 	}
 
-    addObject(id, obj, intersect) {
+    addObject(id, obj, intersect, parent) {
         if (this.geometry.objects[id]) {
-			console.log("Found object id '" + id +"' , not adding data.");
+			console.warn("Found object id '" + id +"' , not adding data.");
 			return;
 		}
-		this.geometry.objects[id] = obj;
-		this.three.scene.add( obj );
+		this.geometry.objects[id] = {
+		  obj: obj,
+		  parent: parent ? parent : this.three.scene,
+		  intersect: !!intersect
+		}
+		this.geometry.objects[id].parent.add( obj );
         if (intersect) {
             this.geometry.intersect.push(obj);
         }
 	}
 
-        _setupLights() {
+    removeObject(id) {
+      if (!this.geometry.objects[id]) {
+          console.warn("Can not find object id '" + id +"' , not removing data.");
+          return;
+      }
+      const data = this.geometry.objects[id];
+      data.parent.remove(data.obj);
+      delete this.geometry.objects[id];
+      //TODO remove from intersects
+    }
+
+    _setupLights() {
 			var ambientLight = new THREE.AmbientLight( 0x333333 ); // soft white light
 			this.three.scene.add( ambientLight );
 		}
@@ -205,14 +223,11 @@ class Renderer {
 		}
 
 		_render(){
-			if (this.running && !this.paused) {
-				var thiz = this;
-				requestAnimationFrame(function(){
-					thiz._render();
-				});
-				this.render();
-				this.update();
-			}
+			//if (this.running && !this.paused) {
+				requestAnimationFrame(this._render.bind(this));
+				this.three.renderer.render(this.three.scene, this.three.camera);
+				// this.update();
+			//}
 		}
 
 		transition(v, time) {
@@ -245,26 +260,28 @@ class Renderer {
 		}
 
 		update() {
+		    if (this.stats) this.stats.begin();
 			this.three.control.update();
 
 			this.frustum.setFromMatrix(
-				new THREE.Matrix4().multiplyMatrices(
-					this.three.camera.projectionMatrix,
-					this.three.camera.matrixWorldInverse
-				)
+			  new THREE.Matrix4().multiplyMatrices(
+			    this.three.camera.projectionMatrix,
+			    this.three.camera.matrixWorldInverse
+			  )
 			);
 
 			const data = {
-				canvasWidth: this.three.renderer.context.canvas.width,
-				canvasHeight: this.three.renderer.context.canvas.height
+			  canvasWidth: this.three.renderer.context.canvas.width,
+			  canvasHeight: this.three.renderer.context.canvas.height
 			};
 
 			this.callbacks["render"].forEach(listener => {
-				listener({"type": "render"}, data);
+			  listener({"type": "render"}, data);
 			});
-			this._updateObjects();
-			this._updateIntersection();
-			this._transitionUpdate();
+			//this._updateObjects();
+			//this._updateIntersection();
+			//this._transitionUpdate();
+			if (this.stats) this.stats.end();
 		}
 
 		registerEventCallback(type, listener) {
@@ -272,10 +289,6 @@ class Renderer {
 				return;
 			}
 			this.callbacks[type].push(listener);
-		}
-
-		render() {
-			this.three.renderer.render(this.three.scene, this.three.camera);
 		}
 
 		addAxes(size) {
