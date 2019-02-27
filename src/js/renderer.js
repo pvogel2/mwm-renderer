@@ -1,5 +1,5 @@
 class Renderer {
-  constructor() {
+  constructor(config) {
     this.stats = window.Stats ? new Stats() : null;
     this.running = false;
 	this.paused = false;
@@ -39,7 +39,7 @@ class Renderer {
 			this.three.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 0.1, 1000 );
 			this.three.camera.position.set(0, 15, 40);
 			//setup the used three renderer
-			this.three.renderer = new THREE.WebGLRenderer({antialias: false});
+			this.three.renderer = new THREE.WebGLRenderer({antialias: true});
 			this.three.renderer.setSize( this.width, this.height );
 			this.three.renderer.shadowMapSoft = false;
 			this.three.renderer.gammaInput = true;
@@ -223,11 +223,11 @@ class Renderer {
 		}
 
 		_render(){
-			//if (this.running && !this.paused) {
+			if (this.running && !this.paused) {
 				requestAnimationFrame(this._render.bind(this));
 				this.three.renderer.render(this.three.scene, this.three.camera);
-				// this.update();
-			//}
+				this.update();
+			}
 		}
 
 		transition(v, time) {
@@ -271,14 +271,16 @@ class Renderer {
 			);
 
 			const data = {
+			  type: 'render',
 			  canvasWidth: this.three.renderer.context.canvas.width,
-			  canvasHeight: this.three.renderer.context.canvas.height
+			  canvasHeight: this.three.renderer.context.canvas.height,
+			  elapsedTime: this.three.clock.getElapsedTime()
 			};
 
 			this.callbacks["render"].forEach(listener => {
-			  listener({"type": "render"}, data);
+			  listener(data);
 			});
-			//this._updateObjects();
+			this._updateObjects();
 			//this._updateIntersection();
 			//this._transitionUpdate();
 			if (this.stats) this.stats.end();
