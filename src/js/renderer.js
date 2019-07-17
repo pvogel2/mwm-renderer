@@ -31,23 +31,40 @@ class Renderer {
 	this.res = "/obj/";
 
 	//setup the three szene
-			this.parent = document.querySelector( "#threejs-container" );
-			this.three.scene = new THREE.Scene();
-            this.width = this.parent.getClientRects()[0].width;
-            this.height = this.parent.getClientRects()[0].height;
-			//setup the three camera
-			this.three.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, 0.1, 1000 );
-			this.three.camera.position.set(0, 15, 40);
-			//setup the used three renderer
-			this.three.renderer = new THREE.WebGLRenderer({antialias: true});
-			this.three.renderer.setSize( this.width, this.height );
-			this.three.renderer.shadowMapSoft = false;
-			this.three.renderer.gammaInput = true;
-			this.three.renderer.gammaOutput = true;
+        this.parent = document.querySelector( config.parentSelector ? config.parentSelector : "#threejs-container" );
+        if (!this.parent) {
+          console.log('could not find parent, exit here');
+          return;
+        }
+        this.three.scene = new THREE.Scene();
+        this.width = config.width ? config.width : this.parent.getClientRects()[0].width;
+        this.height = config.height ? config.height : this.parent.getClientRects()[0].height;
 
-			this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
-			this.three.control.userPanSpeed = 0.2;
-			this.three.control.target.set(0,0,0);
+        //setup the used three renderer
+        this.three.renderer = new THREE.WebGLRenderer({antialias: true});
+        this.three.renderer.setSize( this.width, this.height );
+
+            if (config.cameraType === 'orhtogonal') {
+              this.three.camera = new THREE.OrthographicCamera(
+                  this.width / -2, this.width / 2,
+                  this.height / 2, this.height / -2,
+                  config.cameraNear ? config.cameraNear : 0.1,
+                  config.cameraFar ? config.cameraFar : 2000
+                );
+                this.three.camera.position.z = 5;
+            } else {
+              this.three.renderer.shadowMap.enabled = true;
+              //this.three.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+              this.three.renderer.gammaInput = true;
+              this.three.renderer.gammaOutput = true;
+
+              this.three.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, config.cameraNear ? config.cameraNear : 0.1, config.cameraFar ? config.cameraFar : 2000 );
+              this.three.camera.position.set(0, 15, 40);
+
+              this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
+              this.three.control.userPanSpeed = 0.2;
+              this.three.control.target.set(0,0,0);
+            }
 
 			// initialize object to perform world/screen calculations
 
@@ -109,6 +126,11 @@ class Renderer {
 			});
 		}
 
+		frame() {
+		  this._setupLights(); 
+		  this.three.renderer.render(this.three.scene, this.three.camera);
+		}
+		
 		start() {
 		    if (this.stats) {
 		      this.stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -211,9 +233,12 @@ class Renderer {
     }
 
     _setupLights() {
-			var ambientLight = new THREE.AmbientLight( 0x333333 ); // soft white light
-			this.three.scene.add( ambientLight );
-		}
+      if (!this.setupLightsDone) {
+        const ambientLight = new THREE.AmbientLight( 0x333333 ); // soft white light
+        this.three.scene.add( ambientLight );
+        this.setupLightsDone = true;
+      }
+    }
 
 		_updateIntersection(){
 			this.INTERSECTED = [];
