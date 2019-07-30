@@ -58,12 +58,23 @@ class Renderer {
       this.three.renderer.gammaInput = true;
       this.three.renderer.gammaOutput = true;
 
-      this.three.camera = new THREE.PerspectiveCamera( 75, this.width / this.height, config.cameraNear ? config.cameraNear : 0.1, config.cameraFar ? config.cameraFar : 2000 );
-      this.three.camera.position.set(0, 15, 40);
+      this.three.camera = new THREE.PerspectiveCamera( config.fov ? config.fov: 75, this.width / this.height, config.cameraNear ? config.cameraNear : 0.1, config.cameraFar ? config.cameraFar : 2000 );
+      if (config.position) {
+        this.three.camera.position.set(config.position.x, config.position.y, config.position.z);
+      } else {
+        this.three.camera.position.set(0, 15, 40);
+      }
 
-      this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
-      this.three.control.userPanSpeed = 0.2;
-      this.three.control.target.set(0,0,0);
+      if (config.target) {
+        this.three.camera.lookAt(config.target.x, config.target.y, config.target.z);
+      } else {
+        this.three.camera.lookAt(0, 0, 0);
+      }
+
+      if (this.three.control) {
+        this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
+        this.three.control.userPanSpeed = 0.2;
+      }
     }
 
     // initialize object to perform world/screen
@@ -122,7 +133,7 @@ class Renderer {
     this._setIntersection(event);
 
     this.callbacks["move"].forEach(listener => {
-      listener({"type": "move"}, this.INTERSECTED);
+      listener(event, this.INTERSECTED);
     });
   }
 
@@ -281,9 +292,9 @@ class Renderer {
     var alpha = Math.min((this.three.clock.getElapsedTime() - this.transitionStart)/this.transitionTime, 1.0);
     if (alpha >= 1.0) {
       this.transitioning = false;
-      this.three.control.center.copy(this.transitionVector);
+      if (this.three.control) this.three.control.center.copy(this.transitionVector);
       // this.three.camera.position.copy(this.transitionTarget);
-    } else {
+    } else if (this.three.control) {
       // this.three.camera.position.lerp(this.transitionTarget,
       // alpha);
       this.three.control.center.lerp(this.transitionVector, alpha);
@@ -292,7 +303,7 @@ class Renderer {
 
   update() {
     if (this.stats) this.stats.begin();
-    this.three.control.update();
+    if (this.three.control) this.three.control.update();
 
     this.frustum.setFromMatrix(
       new THREE.Matrix4().multiplyMatrices(
@@ -309,7 +320,8 @@ class Renderer {
     };
 
     this.callbacks["render"].forEach(listener => {
-      listener(data);
+      listener.handleEvent ? listener.handleEvent(data) : listener(data);
+      
     });
     this._updateObjects();
     // this._updateIntersection();
