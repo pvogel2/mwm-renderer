@@ -25,7 +25,8 @@ class Renderer {
       "render": [],
       "move": [],
       "keydown": [],
-      "click": []
+      "click": [],
+      "mousemove": []
     };
     // stuff for resource handling
     this.res = "/obj/";
@@ -124,13 +125,21 @@ class Renderer {
     event.preventDefault();
     this._setIntersection(event);
     this.callbacks["click"].forEach(listener => {
-      listener(event, this.INTERSECTED);
+      if (listener.handleEvent) {
+        listener.handleEvent(event);
+      } else {
+        listener(event, this.INTERSECTED);
+      }
     });
   }
 
   onContainerMousemove(event) {
     event.preventDefault();
     this._setIntersection(event);
+
+    this.callbacks["mousemove"].forEach(listener => {
+      listener.handleEvent(event);
+    });
 
     this.callbacks["move"].forEach(listener => {
       listener(event, this.INTERSECTED);
@@ -167,6 +176,10 @@ class Renderer {
   stop() {
     this.running = false;
     this.three.clock.stop();
+  }
+
+  get intersections() {
+    return this.INTERSECTED;
   }
 
   _setIntersection(event){
