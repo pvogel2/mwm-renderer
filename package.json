@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "url-parse": ">=1.4.3",
-    "lodash": ">=4.17.11",
+    "lodash": ">=4.17.13",
     "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4",
     "webpack-dev-server": ">=3.1.11"

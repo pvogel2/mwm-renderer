@@ -72,7 +72,7 @@ class Renderer {
         this.three.camera.lookAt(0, 0, 0);
       }
 
-      if (this.three.control) {
+      if (config.control) {
         this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
         this.three.control.userPanSpeed = 0.2;
       }
@@ -105,11 +105,14 @@ class Renderer {
   }
 
   onWindowResize() {
-    this.width = this.parent.getClientRects()[0].width;
-    this.height = this.parent.getClientRects()[0].height;
-    this.three.renderer.setSize( this.width, this.height );
-    this.three.camera.aspect = this.width / this.height;
-    this.three.camera.updateProjectionMatrix();
+    const rects = this.parent.getClientRects();
+    if (rects.length) {
+      this.width = rects[0].width;
+      this.height = rects[0].height;
+      this.three.renderer.setSize( this.width, this.height );
+      this.three.camera.aspect = this.width / this.height;
+      this.three.camera.updateProjectionMatrix();
+    }
   }
 
   onKeydown(event) {
