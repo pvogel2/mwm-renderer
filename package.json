@@ -4,8 +4,10 @@
   "description": "javscript class for wrapping three.js setup",
   "private": true,
   "files": [
-    "res/js/renderer.js"
+     "dist/bundle.js",
+     "dist/renderer.js"
   ],
+  "main": "dist/renderer.js",
   "scripts": {
     "test": "webpack",
     "build": "webpack",
@@ -18,7 +20,7 @@
   "author": "Peter Vogel",
   "license": "GPL",
   "dependencies": {
-    "three": "^0.92.0"
+    "three": "^0.103.0"
   },
   "devDependencies": {
     "url-parse": ">=1.4.3",

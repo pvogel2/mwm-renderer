@@ -1,6 +1,9 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 class Renderer {
   constructor(config) {
-    this.stats = window.Stats ? new Stats() : null;
+    this.stats = null;
     this.running = false;
     this.paused = false;
     this.three = {
@@ -73,7 +76,7 @@ class Renderer {
       }
 
       if (config.control) {
-        this.three.control = new THREE.OrbitControls(this.three.camera, this.three.renderer.domElement);
+        this.three.control = new OrbitControls(this.three.camera, this.three.renderer.domElement);
         this.three.control.userPanSpeed = 0.2;
       }
     }
@@ -116,7 +119,7 @@ class Renderer {
   }
 
   onKeydown(event) {
-    if (event.keyCode == 80) { // pP
+    if (event.keyCode === 80) { // pP
       this.paused ? this.continu() : this.pause();
     }
     this.callbacks["keydown"].forEach(listener => {
@@ -207,7 +210,7 @@ class Renderer {
   }
 
   getTexture(path) {
-    return this.three.textureLoader.load( this.res + path )
+    return this.three.textureLoader.load( path );
   }
 
   showObject(ids, visible) {
@@ -222,6 +225,10 @@ class Renderer {
         console.log("showObject: Object with id " + id + " not found.");
       }
     }
+  }
+
+  hasObject(id) {
+    return !!this.geometry.objects[id];
   }
 
   getObject(id) {
@@ -408,4 +415,4 @@ class Renderer {
   }
 };
 
-export { Renderer };
+export { Renderer, THREE, OrbitControls };

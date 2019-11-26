@@ -8,8 +8,8 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    library: 'MWM',
-    libraryTarget: 'window',
+    //library: 'MWM',
+    //libraryTarget: 'this',
     path: path.resolve(__dirname, 'dist')
   }
 };
