@@ -22,7 +22,7 @@
     "three": "^0.103.0"
   },
   "devDependencies": {
-    "url-parse": ">=1.4.3",
+    "url-parse": ">=1.4.7",
     "lodash": ">=4.17.13",
     "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4",
