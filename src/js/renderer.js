@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 class Renderer {
-  constructor(config) {
+  constructor(config = {}) {
     this.stats = null;
     this.running = false;
     this.paused = false;

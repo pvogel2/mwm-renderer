@@ -2,14 +2,12 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: ['./src/js/renderer.js'],
+  entry: {main: './src/js/renderer.js',test: './dev/js/test.js'},
   devServer: {
     contentBase: '.'
   },
   output: {
-    filename: 'bundle.js',
-    //library: 'MWM',
-    //libraryTarget: 'this',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
   }
 };
