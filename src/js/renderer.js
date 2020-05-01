@@ -339,7 +339,8 @@ class Renderer {
       type: 'render',
       canvasWidth: this.three.renderer.context.canvas.width,
       canvasHeight: this.three.renderer.context.canvas.height,
-      elapsedTime: this.three.clock.getElapsedTime()
+      deltaTime: this.three.clock.getDelta(),
+      elapsedTime: this.three.clock.getElapsedTime(),
     };
 
     this.callbacks["render"].forEach(listener => {
