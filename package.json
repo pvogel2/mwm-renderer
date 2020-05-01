@@ -4,10 +4,9 @@
   "description": "javscript class for wrapping three.js setup",
   "private": true,
   "files": [
-     "dist/bundle.js",
-     "dist/renderer.js"
+    "dist/main.bundle.js"
   ],
-  "main": "dist/renderer.js",
+  "main": "dist/main.bundle.js",
   "scripts": {
     "test": "webpack",
     "build": "webpack",
