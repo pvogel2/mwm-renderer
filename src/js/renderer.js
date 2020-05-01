@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import MWMJSONLoader from './MWMJSONLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 class Renderer {
   constructor(config = {}) {
@@ -84,14 +87,14 @@ class Renderer {
     // initialize object to perform world/screen
     // calculations
 
-    this.three.projector = new THREE.Projector();
+    //this.three.projector = new THREE.Projector();
     this.three.raycaster = new THREE.Raycaster()
     this.three.raycaster.params.Points.threshold = 1;
 
     this.three.clock = new THREE.Clock();
     this.three.loadingmanager = new THREE.LoadingManager();
     this.three.textureLoader = new THREE.TextureLoader( this.three.loadingmanager );
-    this.three.loader = new THREE.JSONLoader( this.three.loadingmanager );
+    this.three.loader = new MWMJSONLoader( this.three.loadingmanager );
     this.three.objloader = new THREE.ObjectLoader( this.three.loadingmanager );
 
     this.parent.append( this.three.renderer.domElement );
@@ -227,10 +230,6 @@ class Renderer {
     }
   }
 
-  hasObject(id) {
-    return !!this.geometry.objects[id];
-  }
-
   getObject(id) {
     if (this.geometry.objects[id]) {
       return this.geometry.objects[id];
@@ -238,6 +237,10 @@ class Renderer {
       console.log("getObject: Object with id " + id + " not found.");
       return null;
     }
+  }
+
+  hasObject(id) {
+    return !!this.geometry.objects[id];
   }
 
   addObject(id, obj, intersect, parent) {
@@ -360,6 +363,16 @@ class Renderer {
     this.callbacks[type].push(listener);
   }
 
+  unregisterEventCallback(type, listener) {
+    if (!this.callbacks[type]) {
+      return;
+    }
+    const index = this.callbacks[type].findIndex(registered => registered === listener);
+    if (index > -1) {
+      this.callbacks[type].splice(index, 1);
+    }
+  }
+
   addAxes(size) {
     var a_geometry = new THREE.Geometry();
     var a_material = new THREE.ShaderMaterial({
@@ -416,4 +429,4 @@ class Renderer {
   }
 };
 
-export { Renderer, THREE, OrbitControls };
+export { Renderer, THREE, OrbitControls, OBJLoader, MTLLoader };
