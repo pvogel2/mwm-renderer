@@ -1,4 +1,4 @@
-import { Renderer } from './renderer.js';
+import { Renderer } from '../dist/renderer.esm.js';
 
 document.addEventListener("DOMContentLoaded", function(event) {
     const renderer = new Renderer();

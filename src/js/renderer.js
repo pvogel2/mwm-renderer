@@ -1,10 +1,10 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from '../../node_modules/three/build/three.module';
+import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
 import MWMJSONLoader from './MWMJSONLoader';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
+import { OBJLoader } from '../../node_modules/three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from '../../node_modules/three/examples/jsm/loaders/MTLLoader.js';
 
-class Renderer {
+export class Renderer {
   constructor(config = {}) {
     this.stats = null;
     this.running = false;
@@ -397,11 +397,8 @@ class Renderer {
 
   /* add base grid */
   addGrid(size, dimension) {
-    var gridHelper = new THREE.GridHelper( size, dimension );
-    gridHelper.setColors(
-      new THREE.Color( 0x111122 ),
-      new THREE.Color( 0x222244 )
-    );
+    var gridHelper = new THREE.GridHelper( size, dimension, new THREE.Color( 0x111122 ), new THREE.Color( 0x222244 ) );
+
     gridHelper.material.opacity = 0.5;
     gridHelper.material.transparent = true;
 
@@ -429,4 +426,4 @@ class Renderer {
   }
 };
 
-export { Renderer, THREE, OrbitControls, OBJLoader, MTLLoader };
+//export { Renderer, THREE, OrbitControls, OBJLoader, MTLLoader };
