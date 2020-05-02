@@ -1,7 +1,7 @@
 {
   "name": "mwm-renderer",
   "version": "0.0.2",
-  "description": "javscript class for wrapping three.js setup",
+  "description": "javscript class for wrapping three.js setup, this is still beta version for testing",
   "private": false,
   "files": [
     "dist/renderer.cjs.js",
