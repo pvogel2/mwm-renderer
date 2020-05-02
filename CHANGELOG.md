@@ -1,3 +1,8 @@
+# 0.0.3 (2020-05-03)
+
+# [0.0.3] add publishing to npm registry to workflow.
+
+
 # 0.0.2 (2020-05-02)
 
 # [0.0.2] try ci workflow.
