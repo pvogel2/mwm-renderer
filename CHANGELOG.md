@@ -1,6 +1,6 @@
-# 0.0.4 (2020-05-03)
+# 0.0.5 (2020-05-03)
 
-# [0.0.4] try alternative way of publishing to npm registry to workflow.
+# [0.0.5] fix typo in action file.
 
 
 # 0.0.3 (2020-05-03)
