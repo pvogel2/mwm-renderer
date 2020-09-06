@@ -331,7 +331,7 @@ export class Renderer {
     if (this.stats) this.stats.begin();
     if (this.three.control) this.three.control.update();
 
-    this.frustum.setFromMatrix(
+    this.frustum.setFromProjectionMatrix(
       new THREE.Matrix4().multiplyMatrices(
         this.three.camera.projectionMatrix,
         this.three.camera.matrixWorldInverse
@@ -340,8 +340,8 @@ export class Renderer {
 
     const data = {
       type: 'render',
-      canvasWidth: this.three.renderer.context.canvas.width,
-      canvasHeight: this.three.renderer.context.canvas.height,
+      canvasWidth: this.three.renderer.getContext().canvas.width,
+      canvasHeight: this.three.renderer.getContext().canvas.height,
       deltaTime: this.three.clock.getDelta(),
       elapsedTime: this.three.clock.getElapsedTime(),
     };
