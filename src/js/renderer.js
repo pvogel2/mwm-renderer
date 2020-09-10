@@ -373,7 +373,7 @@ export class Renderer {
     }
   }
 
-  addAxes(size) {
+  addAxes(size = 1) {
     var a_geometry = new THREE.Geometry();
     var a_material = new THREE.ShaderMaterial({
       vertexColors: THREE.VertexColors,
@@ -396,7 +396,7 @@ export class Renderer {
   }
 
   /* add base grid */
-  addGrid(size, dimension) {
+  addGrid(size = 1, dimension) {
     var gridHelper = new THREE.GridHelper( size, dimension, new THREE.Color( 0x111122 ), new THREE.Color( 0x222244 ) );
 
     gridHelper.material.opacity = 0.5;
