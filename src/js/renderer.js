@@ -1,8 +1,5 @@
-import * as THREE from '../../node_modules/three/build/three.module';
-import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
-import MWMJSONLoader from './MWMJSONLoader';
-import { OBJLoader } from '../../node_modules/three/examples/jsm/loaders/OBJLoader.js';
-import { MTLLoader } from '../../node_modules/three/examples/jsm/loaders/MTLLoader.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export class Renderer {
   constructor(config = {}) {
@@ -94,7 +91,6 @@ export class Renderer {
     this.three.clock = new THREE.Clock();
     this.three.loadingmanager = new THREE.LoadingManager();
     this.three.textureLoader = new THREE.TextureLoader( this.three.loadingmanager );
-    this.three.loader = new MWMJSONLoader( this.three.loadingmanager );
     this.three.objloader = new THREE.ObjectLoader( this.three.loadingmanager );
 
     this.parent.append( this.three.renderer.domElement );
@@ -201,15 +197,6 @@ export class Renderer {
 
     // calculate objects intersecting the picking ray
     this.INTERSECTED = this.three.raycaster.intersectObjects( this.geometry.intersect );
-  }
-
-  _loadObject(file, name) {
-    this.three.loader.load( this.res + file, function ( object, materials ) {
-      var obj = new THREE.Mesh( object, new THREE.MeshFaceMaterial( materials ));
-      this.geometry.objects[name] = obj;
-      obj.castShadow = true;
-      this.three.scene.add( obj );
-    }.bind(this), this.res);
   }
 
   getTexture(path) {
@@ -373,8 +360,8 @@ export class Renderer {
     }
   }
 
-  addAxes(size) {
-    var a_geometry = new THREE.Geometry();
+  addAxes(size = 1) {
+    var a_geometry = new THREE.BufferGeometry();
     var a_material = new THREE.ShaderMaterial({
       vertexColors: THREE.VertexColors,
       shading : THREE.SmoothShading,
@@ -382,15 +369,27 @@ export class Renderer {
       fragmentShader : 'varying vec4 axColor;void main() {\n\tgl_FragColor = axColor;\n}'
     });
 
-    a_geometry.colors[ 0 ] = a_geometry.colors[ 1 ] = new THREE.Color( 1, 0, 0);
-    a_geometry.colors[ 2 ] = a_geometry.colors[ 3 ] = new THREE.Color( 0, 1, 0);
-    a_geometry.colors[ 4 ] = a_geometry.colors[ 5 ] = new THREE.Color( 0, 0, 1);
-
-    a_geometry.vertices.push(
+    const positions = [];
+    const colors = [];
+    const vrts = [
       new THREE.Vector3(0,0,0), new THREE.Vector3(size,0,0),
       new THREE.Vector3(0,0,0), new THREE.Vector3(0,size,0),
-      new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,-size)
-    );
+      new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,-size),
+    ];
+ 
+    const clrs = [
+      new THREE.Color( 1, 0, 0), new THREE.Color( 1, 0, 0),
+      new THREE.Color( 0, 1, 0),new THREE.Color( 0, 1, 0),
+      new THREE.Color( 0, 0, 1), new THREE.Color( 0, 0, 1),
+
+    ];
+
+    for (let i = 0; i < vrts.length; i++) {
+      positions.push(vrts[i].x); positions.push(vrts[i].y); positions.push(vrts[i].z);
+      colors.push(clrs[i].r); colors.push(clrs[i].g); colors.push(clrs[i].b);
+    }
+    a_geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( positions ), 3 ) );
+    a_geometry.setAttribute( 'color', new THREE.BufferAttribute( new Float32Array( colors ), 3 ) );
 
     this.addObject("axes", new THREE.LineSegments( a_geometry, a_material) );
   }
@@ -425,5 +424,3 @@ export class Renderer {
     return new Float32Array( 3* length );
   }
 };
-
-//export { Renderer, THREE, OrbitControls, OBJLoader, MTLLoader };

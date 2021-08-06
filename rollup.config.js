@@ -1,4 +1,4 @@
-import resolve from '@rollup/plugin-node-resolve';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import pkg from './package.json';
 
@@ -11,13 +11,16 @@ export default [
 			format: 'umd'
 		},
 		plugins: [
-			resolve(), // so Rollup can find `ms`
+			nodeResolve(), // so Rollup can find `ms`
 			commonjs() // so Rollup can convert `ms` to an ES module
 		]
 	},
 	{
         input: 'src/js/renderer.js',
-        external: ['THREE'],
+		plugins: [
+			nodeResolve(), // so Rollup can find `ms`
+			commonjs() // so Rollup can convert `ms` to an ES module
+		],
 		output: [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
