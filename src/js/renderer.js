@@ -48,6 +48,7 @@ export class Renderer {
     this.three.renderer = new THREE.WebGLRenderer({antialias: true});
     this.three.renderer.setSize( this.width, this.height );
 
+
     if (config.cameraType === 'orhtogonal') {
       this.three.camera = new THREE.OrthographicCamera(
         this.width / -2, this.width / 2,
@@ -58,9 +59,6 @@ export class Renderer {
       this.three.camera.position.z = 5;
     } else {
       this.three.renderer.shadowMap.enabled = true;
-      // this.three.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      this.three.renderer.gammaInput = true;
-      this.three.renderer.gammaOutput = true;
 
       this.three.camera = new THREE.PerspectiveCamera( config.fov ? config.fov: 75, this.width / this.height, config.cameraNear ? config.cameraNear : 0.1, config.cameraFar ? config.cameraFar : 2000 );
       if (config.position) {
@@ -364,7 +362,6 @@ export class Renderer {
     var a_geometry = new THREE.BufferGeometry();
     var a_material = new THREE.ShaderMaterial({
       vertexColors: THREE.VertexColors,
-      shading : THREE.SmoothShading,
       vertexShader : 'varying vec4 axColor;void main() {\n\taxColor = vec4( color, 1.0 );gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}',
       fragmentShader : 'varying vec4 axColor;void main() {\n\tgl_FragColor = axColor;\n}'
     });
