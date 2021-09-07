@@ -359,11 +359,7 @@ export class Renderer {
   }
 
   addAxes(size = 1) {
-<<<<<<< HEAD
-    var a_geometry = new THREE.Geometry();
-=======
     var a_geometry = new THREE.BufferGeometry();
->>>>>>> develop
     var a_material = new THREE.ShaderMaterial({
       vertexColors: THREE.VertexColors,
       vertexShader : 'varying vec4 axColor;void main() {\n\taxColor = vec4( color, 1.0 );gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}',
