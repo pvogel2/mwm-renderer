@@ -24,7 +24,7 @@
   "author": "Peter Vogel",
   "license": "GPL",
   "dependencies": {
-    "three": "^0.132.2"
+    "three": "^0.137.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
