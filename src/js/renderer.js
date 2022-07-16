@@ -116,6 +116,10 @@ export class Renderer {
   }
 
   onKeydown(event) {
+    // disable trigger on user interaction due to data input
+    if (event.target !== 'body') {
+      return;
+    }
     if (event.keyCode === 80) { // pP
       this.paused ? this.continu() : this.pause();
     }
