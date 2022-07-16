@@ -252,7 +252,12 @@ export class Renderer {
     const data = this.geometry.objects[id];
     data.parent.remove(data.obj);
     delete this.geometry.objects[id];
-    // TODO remove from intersects
+
+    const idx = this.geometry.intersect.findIndex((o) => o.uuid === data.obj.uuid);
+    if (idx > -1) {
+      this.geometry.intersect.splice(idx, 1);
+    }
+    return true;
   }
 
   _setupLights() {
