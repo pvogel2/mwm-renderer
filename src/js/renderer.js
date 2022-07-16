@@ -235,24 +235,28 @@ export class Renderer {
   addObject(id, obj, intersect, parent) {
     if (this.geometry.objects[id]) {
       console.warn("Found object id '" + id +"' , not adding data.");
-      return;
+      return false;
     }
+
     this.geometry.objects[id] = {
       obj: obj,
       parent: parent ? parent : this.three.scene,
       intersect: !!intersect
     }
+
     this.geometry.objects[id].parent.add( obj );
     if (intersect) {
       this.geometry.intersect.push(obj);
     }
+    return true;
   }
 
   removeObject(id) {
     if (!this.geometry.objects[id]) {
       console.warn("Can not find object id '" + id +"' , not removing data.");
-      return;
+      return false;
     }
+
     const data = this.geometry.objects[id];
     data.parent.remove(data.obj);
     delete this.geometry.objects[id];
@@ -408,6 +412,7 @@ export class Renderer {
     gridHelper.material.transparent = true;
 
     this.addObject("grid", gridHelper);
+    return gridHelper;
   }
 
   projectVisible(point) {
