@@ -41,11 +41,11 @@ export class Renderer {
       return;
     }
     this.three.scene = new THREE.Scene();
-    this.width = config.width ? config.width : this.parent.getClientRects()[0].width;
-    this.height = config.height ? config.height : this.parent.getClientRects()[0].height;
+    this._calcDimensions();
 
     // setup the used three renderer
     this.three.renderer = new THREE.WebGLRenderer({antialias: true});
+    console.log('set size:', this.width, this.height);
     this.three.renderer.setSize( this.width, this.height );
 
 
@@ -104,15 +104,20 @@ export class Renderer {
     window.addEventListener( 'keydown', this.onKeydown.bind(this), false );
   }
 
+  _calcDimensions() {
+    const rect = this.parent.getBoundingClientRect();
+
+    this.width = rect.width;
+    this.height = rect.height;
+    this.left = rect.left;
+    this.top = rect.top;
+  }
+
   onWindowResize() {
-    const rects = this.parent.getClientRects();
-    if (rects.length) {
-      this.width = rects[0].width;
-      this.height = rects[0].height;
-      this.three.renderer.setSize( this.width, this.height );
-      this.three.camera.aspect = this.width / this.height;
-      this.three.camera.updateProjectionMatrix();
-    }
+    this._calcDimensions();
+    this.three.renderer.setSize( this.width, this.height );
+    this.three.camera.aspect = this.width / this.height;
+    this.three.camera.updateProjectionMatrix();
   }
 
   onKeydown(event) {
@@ -131,6 +136,7 @@ export class Renderer {
   onContainerClick(event) {
     event.preventDefault();
     this._setIntersection(event);
+
     this.callbacks["click"].forEach(listener => {
       if (listener.handleEvent) {
         listener.handleEvent(event);
@@ -190,11 +196,15 @@ export class Renderer {
   }
 
   _setIntersection(event){
-    var offset = {left: 0, top:0};// this.three.renderer.domElement.offset();
-    var scrollLeft = window.scrollX;
-    var scrollTop = window.scrollY;
-    this.mouse.x = ( (event.clientX - offset.left + scrollLeft) / this.width ) * 2 - 1;
-    this.mouse.y = - ( (event.clientY - offset.top + scrollTop) / this.height ) * 2 + 1;
+    // const scrollLeft = window.scrollX;
+    // const scrollTop = window.scrollY;
+
+    this._calcDimensions();
+
+    this.mouse.x = ( (event.clientX - this.left) / this.width ) * 2 - 1;
+    this.mouse.y = - ( (event.clientY - this.top) / this.height ) * 2 + 1;
+    // console.log(event.clientX, event.clientY, scrollLeft, scrollTop, this.mouse.x, this.mouse.y);
+
     this.three.raycaster.setFromCamera( this.mouse, this.three.camera );
 
     // calculate objects intersecting the picking ray
