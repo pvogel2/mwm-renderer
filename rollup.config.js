@@ -10,17 +10,19 @@ export default [
 			file: pkg.browser,
 			format: 'umd'
 		},
+		external: ['three'],
 		plugins: [
 			nodeResolve(), // so Rollup can find `ms`
 			commonjs() // so Rollup can convert `ms` to an ES module
 		]
 	},
 	{
-        input: 'src/js/renderer.js',
+    input: 'src/js/renderer.js',
 		plugins: [
 			nodeResolve(), // so Rollup can find `ms`
 			commonjs() // so Rollup can convert `ms` to an ES module
 		],
+		external: ['three'],
 		output: [
 			{ file: pkg.main, format: 'cjs' },
 			{ file: pkg.module, format: 'es' }
