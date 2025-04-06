@@ -3,14 +3,17 @@
   "version": "0.1.2",
   "description": "javscript class for wrapping three.js setup, this is still beta version for testing",
   "private": false,
+  "main": "dist/renderer.js",
   "files": [
-    "dist/renderer.cjs.js",
-    "dist/renderer.esm.js",
-    "dist/renderer.umd.js"
+    "dist/renderer.js",
+    "dist/js/renderer.js",
+    "dist/jsm/renderer.js",
+    "package.json",
+    "package-lock.json",
+    "LICENCE",
+    "CHANGELOG.md",
+    "README.md"
   ],
-  "main": "dist/renderer.cjs.js",
-  "module": "dist/renderer.esm.js",
-  "browser": "dist/renderer.umd.js",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",

@@ -384,7 +384,7 @@ export class Renderer {
   addAxes(size = 1) {
     var a_geometry = new THREE.BufferGeometry();
     var a_material = new THREE.ShaderMaterial({
-      vertexColors: THREE.VertexColors,
+      vertexColors: true,
       vertexShader : 'varying vec4 axColor;void main() {\n\taxColor = vec4( color, 1.0 );gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}',
       fragmentShader : 'varying vec4 axColor;void main() {\n\tgl_FragColor = axColor;\n}'
     });

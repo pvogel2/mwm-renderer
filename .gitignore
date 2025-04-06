@@ -1,4 +1,5 @@
 .project
 .settings
+*.code-workspace
 node_modules
 dist
