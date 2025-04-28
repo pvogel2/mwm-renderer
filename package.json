@@ -1,6 +1,6 @@
 {
   "name": "mwm-renderer",
-  "version": "1.174.0",
+  "version": "1.174.1",
   "description": "javscript class for wrapping three.js setup, this is still beta version for testing",
   "private": false,
   "main": "dist/renderer.js",
@@ -18,7 +18,8 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "dev": "npm-run-all --parallel start watch",
-    "start": "serve"
+    "start": "serve",
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
